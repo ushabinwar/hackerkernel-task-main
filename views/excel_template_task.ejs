@@ -1,0 +1,18 @@
+<table id="t1">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Task Name</th>
+        <th>Task Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% tasks.forEach(function(task) { %>
+        <tr>
+          <td><%= task.user %></td>
+          <td><%= task.task_name %></td>
+          <td><%= task.task_type %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>

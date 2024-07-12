@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <style>
+  * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  padding:4vh 22vh;
+ 
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+ 
+  
+}
+
+h1 {
+  margin-top: 30px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+form {
+  margin-top: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="submit"],
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  margin-bottom: 10px;
+  font-size: 16px;
+  
+}
+
+input[type="submit"] {
+  background-color: #EF4B52;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 17px;
+ 
+  
+
+}
+
+input[type="submit"]:hover {
+  background-color: #c23037;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeAndSlideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Specific styles */
+h1 {
+  animation: fadeAndSlideIn 0.5s ease-in-out;
+}
+
+form {
+  animation: fadeAndSlideIn 0.5s ease-in-out;
+}
+
+table {
+  animation: fadeAndSlideIn 0.5s ease-in-out;
+}
+
+/* Additional animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.button-spin {
+  animation: spin 2s infinite linear;
+}
+
+/* Premium Export button */
+.export-button {
+  display: inline-block;
+  margin-top: 2%;
+  background-color: #44b261;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  animation: fadeAndSlideIn 0.5s ease-in-out;
+}
+
+.export-button:hover {
+  /* transform: translateY(-2px); */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #107c2d;
+  transition: 2;
+}
+
+.export-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.export-button:disabled {
+  background-color: #ddd;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.export-button:disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <body>
+    <h1>Create a User</h1>
+    <form action="/create-user" method="post" onsubmit="return validateEmail()">
+      <input required type="text" name="name" placeholder="e.g. Usha Binwar ">
+      <input required type="email" name="email" placeholder="abc@example.com">
+      <input required type="text" id="mobileNumber" name="mobile" placeholder="+91 9685476286"> <br> <br>
+      <p id="validationMessage"></p> <br>
+      <input type="submit" value="Create a User"> <br> <br>
+    </form>
+    <h1>Add Tasks for the User</h1>
+    <form action="/create-task" method="post">
+      <select name="user">
+        <% for(let i of users){ %>
+          <option value="<%=i.name%>"><%=i.name%> | <%=i.email %></option>
+        <% } %>
+      </select>
+      <input type="text" name="task_name" placeholder="Task Name">
+      <select name="task_type">
+        <option value="pending">Pending</option>
+        <option value="done">Done</option> <br>
+      </select>
+      <br>
+      <br>
+      <input type="submit" value="Add Task"> <br> <br>
+    </form>
+
+    <h1>Task Assigned to Users:</h1>
+
+    <table style="width:100%"> 
+      <% if(users){ %>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Mobile No.</th>
+        <th>Task Name</th>
+        <th>Task Type</th>
+      </tr>
+        <% for(let i of tasks){ %>
+          <tr>
+            <% let findIndex = users.findIndex(x => x.name == i.user) %>
+            <td><%= users[findIndex].name %></td>
+            <td><%= users[findIndex].email %></td>
+            <td><%= users[findIndex].mobile %></td>
+              <td><%=i.task_name%></td>
+              <td>
+                <select name="task_type" class="task_type_call" id="tt-<%=i._id%>">
+                <% if(i.task_type == "pending"){ %>
+                  <option selected value="pending">Pending</option>
+                  <option value="done">Done</option>
+                <% } else { %>
+                  <option value="pending">Pending</option>
+                  <option selected value="done">Done</option>
+                <% } %>
+                </select>
+              </td>
+          </tr>
+        <% } %>
+      <% } %>
+    </table>
+
+    <h1>Export all the Users & There tasks</h1>
+
+    <button class="export-button" onclick="window.location.href = '/export'">Generate Excel Sheet</button>
+
+    <script>
+      function validateMobileNumber() {
+        // Get the input value
+        const numberInput = document.getElementById('mobileNumber');
+        const number = numberInput.value.replaceAll(/\s/g,'');
+
+        // Regular expression for mobile number validation
+        const mobileNumberPattern = /^(?:\+?91)?[6-9]\d{9}$/;
+
+        // Test the number against the pattern
+        const isValid = mobileNumberPattern.test(number);
+
+        // Display validation result and blocking submit button
+        const validationMessage = document.getElementById('validationMessage');
+        if (isValid) {
+          validationMessage.textContent = 'Mobile number is valid.';
+          validationMessage.style.color = 'green';
+          document.querySelector('input[type="submit"]').disabled = false;
+        } else {
+          validationMessage.textContent = 'Mobile number is invalid.';
+          validationMessage.style.color = 'red';
+          document.querySelector('input[type="submit"]').disabled = true;
+        }
+      }
+
+      document.querySelector('#mobileNumber').addEventListener('keyup',()=>{
+        validateMobileNumber();
+      })
+      
+      // ajax call to update task_type
+      document.querySelectorAll('.task_type_call').forEach((item)=>{
+        item.addEventListener('change',()=>{
+          $.ajax({
+          type: 'POST',
+          url: '/update-task_type/'+item.id.split('t')[1],
+          data: {task_type:item.value}, 
+          success: function(response) {}
+          });
+        })
+      })
+
+      // importing users from ejs to js
+      let users =  <%- JSON.stringify(users) %>;
+
+      // validating duplicate email
+      function validateEmail() {
+        let email = document.querySelector('input[name="email"]').value;
+        console.log(email)
+        let findIndex = users.findIndex(x => x.email == email);
+        if(findIndex != -1){
+          alert("Email already exists");
+          return false;
+        }
+      }
+      </script>
+  </body>
+</html>

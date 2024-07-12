@@ -1,0 +1,29 @@
+<table style="width:100%"> 
+  <% if(users){ %>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Mobile No.</th>
+    <th>Task Name</th>
+    <th>Task Type</th>
+  </tr>
+    <% for(let i of tasks){ %>
+      <tr>
+        <% let findIndex = users.findIndex(x => x.name == i.user) %>
+        <td><%= users[findIndex].name %></td>
+        <td><%= users[findIndex].email %></td>
+        <td><%= users[findIndex].mobile %></td>
+          <td><%=i.task_name%></td>
+          <td>
+            <select name="task_type" class="task_type_call" id="tt-<%=i._id%>">
+            <% if(i.task_type == "pending"){ %>
+              <option selected value="pending">Pending</option>
+            <% } else { %>
+                <option value="pending">Done</option>
+            <% } %>
+            </select>
+          </td>
+      </tr>
+    <% } %>
+  <% } %>
+</table>
